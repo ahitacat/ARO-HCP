@@ -112,7 +112,7 @@ clouds:
       clusterServiceImageTag: a23276d
       clusterServiceImageRepo: app-sre/uhc-clusters-service
       # Hypershift Operator
-      hypershiftOperatorImageTag: a95fc46
+      hypershiftOperatorImageTag: c9635c1
       externalDNSImageTag: v0.14.2
       # Shared SVC KV
       serviceKeyVaultName: 'aro-hcp-dev-svc-kv'
@@ -173,4 +173,4 @@ clouds:
           # Hypershift
           # uncomment the following line if you want to install the hypershift operator
           # with CRD support for managedIdentities
-          #hypershiftAdditionalInstallArg: '--tech-preview-no-upgrade'
+          hypershiftAdditionalInstallArg: '--tech-preview-no-upgrade'
