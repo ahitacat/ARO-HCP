@@ -21,9 +21,8 @@ info:
 run:
 	./aro-hcp-frontend --location ${LOCATION} \
 		--clusters-service-url http://localhost:8000 \
-		--cluster-service-provision-shard 1 \
-		--cluster-service-noop-provision \
-		--cluster-service-noop-deprovision
+		--cosmos-name ${DB_NAME} \
+		--cosmos-url ${DB_URL}
 
 clean:
 	rm -f aro-hcp-frontend

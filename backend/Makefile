@@ -16,7 +16,9 @@ backend:
 
 run:
 	./aro-hcp-backend --location ${LOCATION} \
-		--clusters-service-url http://localhost:8000
+		--clusters-service-url http://localhost:8000 \
+		--cosmos-name ${DB_NAME} \
+		--cosmos-url ${DB_URL}
 .PHONY: run
 
 clean:

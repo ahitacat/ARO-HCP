@@ -60,7 +60,7 @@ func NewRootCmd() *cobra.Command {
 	rootCmd.Flags().StringVar(&opts.cosmosURL, "cosmos-url", os.Getenv("DB_URL"), "Cosmos database URL")
 	rootCmd.Flags().StringVar(&opts.location, "location", os.Getenv("LOCATION"), "Azure location")
 	rootCmd.Flags().IntVar(&opts.port, "port", 8443, "port to listen on")
-	rootCmd.Flags().IntVar(&opts.metricsPort, "metrics-port", 8081, "port to serve metrics on")
+	rootCmd.Flags().IntVar(&opts.metricsPort, "metrics-port", 8082, "port to serve metrics on")
 
 	rootCmd.Flags().StringVar(&opts.clustersServiceURL, "clusters-service-url", "https://api.openshift.com", "URL of the OCM API gateway.")
 	rootCmd.Flags().BoolVar(&opts.insecure, "insecure", false, "Skip validating TLS for clusters-service.")
