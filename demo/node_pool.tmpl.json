@@ -3,7 +3,7 @@
   "properties": {
     "version": {
       "id": "4.19.0",
-      "channelGroup": "stable"
+      "channelGroup": "fast"
     },
     "platform": {
       "subnetId": "/subscriptions/$sub/resourceGroups/$customer-rg/providers/Microsoft.Network/virtualNetworks/customer-vnet/subnets/customer-subnet-1",

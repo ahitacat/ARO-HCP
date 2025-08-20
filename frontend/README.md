@@ -33,6 +33,8 @@ make deploy
 make undeploy
 ```
 
+Note: KUBECONFIG should use the svc environment.
+
 > To create a cluster, follow the instructions in [development-setup.md](../dev-infrastructure/docs/development-setup.md)
 
 ## Available endpoints

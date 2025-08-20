@@ -104,7 +104,7 @@ deploy:
 		--set tracing.address=${TRACING_ADDRESS} \
 		--set tracing.exporter=${TRACING_EXPORTER} \
 		--set audit.tcpAddress=${AUDIT_TCP_ADDRESS} \
-		--namespace aro-hcp
+		--namespace aro-hcp 
 .PHONY: deploy
 
 undeploy:

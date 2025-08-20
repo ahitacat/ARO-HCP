@@ -360,7 +360,7 @@ func (f *Frontend) BuildCSCluster(resourceID *azcorearm.ResourceID, requestHeade
 		return nil, fmt.Errorf("missing " + arm.HeaderNameHomeTenantID + " header")
 	}
 
-	versionCSformat := ocm.NewOpenShiftVersionXYZ(hcpCluster.Properties.Version.ID)
+	versionCSformat := ocm.ConvertOpenShiftVersionToCS(hcpCluster.Properties.Version.ID, hcpCluster.Properties.Version.ChannelGroup)
 	hcpCluster.Properties.Version.ID = versionCSformat
 
 	clusterBuilder := arohcpv1alpha1.NewCluster()
@@ -534,7 +534,7 @@ func ConvertCStoNodePool(resourceID *azcorearm.ResourceID, np *arohcpv1alpha1.No
 func (f *Frontend) BuildCSNodePool(ctx context.Context, nodePool *api.HCPOpenShiftClusterNodePool, updating bool) (*arohcpv1alpha1.NodePool, error) {
 	npBuilder := arohcpv1alpha1.NewNodePool()
 
-	nodepoolCSversion := ocm.ConvertOpenshiftVersionAddPrefix(nodePool.Properties.Version.ID)
+	nodepoolCSversion := ocm.ConvertOpenShiftVersionToCS(nodePool.Properties.Version.ID, nodePool.Properties.Version.ChannelGroup)
 
 	// These attributes cannot be updated after node pool creation.
 	if !updating {

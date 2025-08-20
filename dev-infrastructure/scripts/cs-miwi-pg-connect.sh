@@ -16,7 +16,7 @@ SA_TOKEN=$(kubectl create token ${SA_NAME} --namespace=${NAMESPACE} --audience a
 # az login with managed identity via SA token
 export AZURE_CONFIG_DIR="${HOME}/.azure-profile-cs-${PG_RESOURCEGROUP}"
 rm -rf $AZURE_CONFIG_DIR
-az login --federated-token ${SA_TOKEN} --service-principal -u $AZURE_CLIENT_ID -t $AZURE_TENANT_ID > /dev/null 2>&1
+az login --federated-token ${SA_TOKEN} --service-principal -u $AZURE_CLIENT_ID -t $AZURE_TENANT_ID
 
 # get tmp DB password
 PGPASSWORD=$(az account get-access-token --resource='https://ossrdbms-aad.database.windows.net' -o json | jq .accessToken -r)
