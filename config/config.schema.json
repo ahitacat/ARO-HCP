@@ -1029,6 +1029,41 @@
                   },
                   "required": ["minVersion", "maxVersion"],
                   "additionalProperties": false
+                },
+                "fast": {
+                  "type": "object",
+                  "properties": {
+                    "minVersion": {
+                      "oneOf": [
+                        { "$ref": "#/definitions/semVer" },
+                        { "type": "string", "pattern": "" }
+                      ]
+                    },
+                    "maxVersion": {
+                      "oneOf": [
+                        { "$ref": "#/definitions/semVer" },
+                        { "type": "string", "pattern": "^$" }
+                      ]
+                    }
+                  },
+                  "required": ["minVersion", "maxVersion"],
+                  "additionalProperties": false
+                },
+                "candidate": {
+                  "type": "object",
+                  "properties": {
+                    "minVersion": {
+                      "$ref": "#/definitions/semVer"
+                    },
+                    "maxVersion": {
+                      "oneOf": [
+                        { "$ref": "#/definitions/semVer" },
+                        { "type": "string", "pattern": "^$" }
+                      ]
+                    }
+                  },
+                  "required": ["minVersion", "maxVersion"],
+                  "additionalProperties": false
                 }
               },
               "required": ["stable"],

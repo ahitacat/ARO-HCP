@@ -160,6 +160,14 @@ resourceGroups:
       configRef: clustersService.ocpVersions.channelGroups.stable.minVersion
     - name: OCP_VERSIONS_CHANNEL_GROUPS_STABLE_MAX_VERSION
       configRef: clustersService.ocpVersions.channelGroups.stable.maxVersion
+    - name: OCP_VERSIONS_CHANNEL_GROUPS_FAST_MIN_VERSION
+      configRef: clustersService.ocpVersions.channelGroups.fast.minVersion
+    - name: OCP_VERSIONS_CHANNEL_GROUPS_FAST_MAX_VERSION
+      configRef: clustersService.ocpVersions.channelGroups.fast.maxVersion
+    - name: OCP_VERSIONS_CHANNEL_GROUPS_CANDIDATE_MIN_VERSION
+      configRef: clustersService.ocpVersions.channelGroups.candidate.minVersion
+    - name: OCP_VERSIONS_CHANNEL_GROUPS_CANDIDATE_MAX_VERSION
+      configRef: clustersService.ocpVersions.channelGroups.candidate.maxVersion
     # this is maestro consumer registration stuff
     # this goes away when we have a real registration process
     - name: CONSUMER_NAME

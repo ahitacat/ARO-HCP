@@ -871,6 +871,13 @@ clouds:
           roleSetName: dev
         azureRuntimeConfig:
           tlsCertificatesIssuer: Self
+        ocpVersions:
+          channelGroups:
+            stable:
+              maxVersion: 4.20.4
+            candidate:
+              minVersion: 4.19.7
+              maxVersion: 4.21.0
       # Hypershift Operator
       hypershift:
         image:

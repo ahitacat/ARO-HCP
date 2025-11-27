@@ -3,7 +3,7 @@
   "properties": {
     "version": {
       "id": "4.19",
-      "channelGroup": "stable"
+      "channelGroup": "candidate"
     },
     "dns": {},
     "network": {
