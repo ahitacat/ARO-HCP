@@ -108,6 +108,35 @@ type verifyNodePoolUpgrade struct {
 	previousReleaseImages set.Set[string]
 }
 
+// nodeSummary is a compact representation of a node for error messages.
+// Full node objects can be 10KB+ due to annotations and are too large for error output.
+type nodeSummary struct {
+	Name                    string   `json:"name"`
+	Ready                   bool     `json:"ready"`
+	ContainerRuntimeVersion string   `json:"containerRuntimeVersion"`
+	Images                  []string `json:"Images,omitempty"`
+}
+
+func summarizeNodes(nodes []corev1.Node) []nodeSummary {
+	summaries := make([]nodeSummary, len(nodes))
+	for i := range nodes {
+		node := &nodes[i]
+		var images []string
+		for _, img := range node.Status.Images {
+			for _, name := range img.Names {
+				images = append(images, name)
+			}
+		}
+		summaries[i] = nodeSummary{
+			Name:                    node.Name,
+			Ready:                   nodeReady(node),
+			ContainerRuntimeVersion: node.Status.NodeInfo.ContainerRuntimeVersion,
+			Images:                  images,
+		}
+	}
+	return summaries
+}
+
 func (v verifyNodePoolUpgrade) Name() string {
 	return fmt.Sprintf("VerifyNodePoolUpgrade(expected=%s, nodePool=%s)", v.expectedVersion, v.nodePoolName)
 }
@@ -153,11 +182,12 @@ func (v verifyNodePoolUpgrade) Verify(ctx context.Context, adminRESTConfig *rest
 	}
 
 	msg := fmt.Sprintf("node pool upgrade verification failed: %s", strings.Join(reasons, "; "))
-	nodesJSON, err := json.Marshal(matchingNodes)
+	nodeSummaries := summarizeNodes(matchingNodes)
+	nodeSummariesJSON, err := json.Marshal(nodeSummaries)
 	if err != nil {
-		return fmt.Errorf("%s; marshal nodes: %w", msg, err)
+		return fmt.Errorf("%s; marshal node summaries: %w", msg, err)
 	}
-	return fmt.Errorf("%s; nodes=%s", msg, string(nodesJSON))
+	return fmt.Errorf("%s; nodes=%s", msg, string(nodeSummariesJSON))
 }
 
 // VerifyNodePoolUpgrade verifies after a node pool upgrade (y-stream or z-stream) for nodes in the
