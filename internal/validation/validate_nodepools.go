@@ -20,6 +20,7 @@ import (
 	"k8s.io/apimachinery/pkg/api/operation"
 	"k8s.io/apimachinery/pkg/api/safe"
 	"k8s.io/apimachinery/pkg/api/validate"
+	"k8s.io/apimachinery/pkg/util/sets"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 
 	azcorearm "github.com/Azure/azure-sdk-for-go/sdk/azcore/arm"
@@ -210,13 +211,14 @@ func validateNodePoolVersionProfile(ctx context.Context, op operation.Operation,
 	}
 
 	//ChannelGroup string `json:"channelGroup,omitempty"`
-	// this is required and is later checked for matching the control plane.
-	// TODO   Interestingly, they won't match long term since clusters can change channels and aren't check
 	errs = append(errs, validate.RequiredValue(ctx, op, fldPath.Child("channelGroup"), &newObj.ChannelGroup, safe.Field(oldObj, toNodePoolVersionProfileChannelGroup))...)
 
 	if !op.HasOption(api.FeatureExperimentalReleaseFeatures) {
+		errs = append(errs, validate.Enum(ctx, op, fldPath.Child("channelGroup"), &newObj.ChannelGroup, safe.Field(oldObj, toNodePoolVersionProfileChannelGroup), sets.New("stable", "fast"), nil)...)
 		// without feature flag, only allow version 4.20.8 and above
 		errs = append(errs, VersionMustBeAtLeast(ctx, op, fldPath.Child("id"), &newObj.ID, safe.Field(oldObj, toNodePoolVersionProfileID), "4.20.8")...)
+	} else {
+		errs = append(errs, validate.Enum(ctx, op, fldPath.Child("channelGroup"), &newObj.ChannelGroup, safe.Field(oldObj, toNodePoolVersionProfileChannelGroup), sets.New("stable", "fast", "candidate", "nightly"), nil)...)
 	}
 
 	return errs
