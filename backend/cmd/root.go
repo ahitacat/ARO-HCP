@@ -443,6 +443,8 @@ func (f *BackendRootCmdFlags) ToBackendOptions(ctx context.Context, cmd *cobra.C
 		FPAMIDataplaneClientBuilder:        fpaMIDataplaneClientBuilder,
 		SMIClientBuilder:                   smiClientBuilder,
 		CheckAccessV2ClientBuilder:         checkAccessV2ClientBuilder,
+		AZCoreClientOptions:                azureConfig.CloudEnvironment.AZCoreClientOptions(),
+		KeyVaultDNSSuffix:                  azureConfig.CloudEnvironment.KeyVaultDNSSuffix(),
 		ClusterScopedIdentitiesConfig:      clusterScopedIdentitiesConfig,
 		MetricsRegisterer:                  legacyregistry.Registerer(),
 		MetricsGatherer:                    legacyregistry.DefaultGatherer,

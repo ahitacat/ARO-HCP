@@ -24,6 +24,7 @@ import (
 
 	_ "k8s.io/component-base/metrics/prometheus/clientgo"
 
+	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -40,6 +41,7 @@ import (
 	"github.com/Azure/ARO-HCP/backend/pkg/controllers/clusterpropertiescontroller"
 	"github.com/Azure/ARO-HCP/backend/pkg/controllers/controllerutils"
 	"github.com/Azure/ARO-HCP/backend/pkg/controllers/datadumpcontrollers"
+	"github.com/Azure/ARO-HCP/backend/pkg/controllers/etcdencryption"
 	"github.com/Azure/ARO-HCP/backend/pkg/controllers/externalauthdeletion"
 	"github.com/Azure/ARO-HCP/backend/pkg/controllers/managementclustercontrollers"
 	"github.com/Azure/ARO-HCP/backend/pkg/controllers/metricscontrollers"
@@ -88,6 +90,8 @@ type BackendOptions struct {
 	FPAMIDataplaneClientBuilder        azureclient.FPAMIDataplaneClientBuilder
 	SMIClientBuilder                   azureclient.ServiceManagedIdentityClientBuilder
 	CheckAccessV2ClientBuilder         azureclient.CheckAccessV2ClientBuilder
+	AZCoreClientOptions                *azcore.ClientOptions
+	KeyVaultDNSSuffix                  string
 	ClusterScopedIdentitiesConfig      *internalazure.ClusterScopedIdentitiesConfig
 }
 
@@ -575,6 +579,15 @@ func (b *Backend) runBackendControllersUnderLeaderElection(ctx context.Context, 
 		unionKubeApplierInformers,
 	)
 
+	etcdEncryptionKeyVersionSyncController := etcdencryption.NewEtcdEncryptionKeyVersionSyncController(
+		b.options.ResourcesDBClient,
+		activeOperationLister,
+		backendInformers,
+		unionKubeApplierInformers,
+		b.options.KeyVaultDNSSuffix,
+		etcdencryption.NewMIDataplaneKeysClientFactory(b.options.FPAMIDataplaneClientBuilder, b.options.AZCoreClientOptions),
+	)
+
 	createClusterScopedReadDesiresController := controllers.NewCreateClusterScopedReadDesiresController(
 		activeOperationLister, b.options.ResourcesDBClient, b.options.KubeApplierDBClients,
 		backendInformers, b.options.MaestroSourceEnvironmentIdentifier,
@@ -749,6 +762,7 @@ func (b *Backend) runBackendControllersUnderLeaderElection(ctx context.Context, 
 				go clusterBaseDomainPrefixSyncController.Run(ctx, 20)
 				go clusterPropertiesSyncController.Run(ctx, 20)
 				go identityMigrationController.Run(ctx, 20)
+				go etcdEncryptionKeyVersionSyncController.Run(ctx, 20)
 				go azureRPRegistrationValidationController.Run(ctx, 20)
 				go azureClusterResourceGroupExistenceValidationController.Run(ctx, 20)
 				go azureClusterManagedIdentitiesExistenceValidationController.Run(ctx, 20)

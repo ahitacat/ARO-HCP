@@ -37,6 +37,9 @@ type AzureCloudEnvironment struct {
 	rdbmsScope string
 	// Check Access V2 environment of the cloud environment
 	checkAccessV2Environment *checkAccessV2Environment
+	// keyVaultDNSSuffix is the DNS suffix for Key Vault endpoints
+	// (e.g. "vault.azure.net" for Azure Public Cloud).
+	keyVaultDNSSuffix string
 	// Options for the Azure clients.
 	clientOptions *policy.ClientOptions
 }
@@ -63,6 +66,7 @@ func NewAzureCloudEnvironment(
 		cloud                    cloud.Configuration
 		rdbmsScope               string
 		checkAccessV2Environment checkAccessV2Environment
+		keyVaultDNSSuffix        string
 	}{
 		apisconfigv1.AzureChinaCloud: {
 			cloud:      cloud.AzureChina,
@@ -71,6 +75,7 @@ func NewAzureCloudEnvironment(
 				domainSuffix: "azure.cn",
 				scope:        "https://authorization.azure.cn/.default",
 			},
+			keyVaultDNSSuffix: "vault.azure.cn",
 		},
 		apisconfigv1.AzurePublicCloud: {
 			cloud:      cloud.AzurePublic,
@@ -79,6 +84,7 @@ func NewAzureCloudEnvironment(
 				domainSuffix: "azure.net",
 				scope:        "https://authorization.azure.net/.default",
 			},
+			keyVaultDNSSuffix: "vault.azure.net",
 		},
 		apisconfigv1.AzureUSGovernmentCloud: {
 			cloud:      cloud.AzureGovernment,
@@ -87,6 +93,7 @@ func NewAzureCloudEnvironment(
 				domainSuffix: "azure.us",
 				scope:        "https://authorization.azure.us/.default",
 			},
+			keyVaultDNSSuffix: "vault.usgovcloudapi.net",
 		},
 	}
 
@@ -110,6 +117,7 @@ func NewAzureCloudEnvironment(
 		configuration:            &configuration.cloud,
 		rdbmsScope:               configuration.rdbmsScope,
 		checkAccessV2Environment: &configuration.checkAccessV2Environment,
+		keyVaultDNSSuffix:        configuration.keyVaultDNSSuffix,
 		clientOptions:            clientOptions,
 	}, nil
 }
@@ -136,6 +144,10 @@ func (a AzureCloudEnvironment) ARMClientOptions() *azcorearm.ClientOptions {
 	return &azcorearm.ClientOptions{
 		ClientOptions: *a.clientOptions,
 	}
+}
+
+func (a AzureCloudEnvironment) KeyVaultDNSSuffix() string {
+	return a.keyVaultDNSSuffix
 }
 
 func (a AzureCloudEnvironment) CloudConfiguration() *cloud.Configuration {

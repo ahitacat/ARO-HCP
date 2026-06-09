@@ -67,6 +67,21 @@ type ServiceProviderClusterSpec struct {
 	// Once this contains the critical values, we will create it on management clusters.
 	// We may or may not choose to store the actual state in status.  We may choose to store the actual state independently.
 	DesiredHostedCluster *v1beta1.HostedCluster `json:"desiredHostedCluster,omitempty"`
+
+	// EtcdEncryption tracks the latest key version detected in the customer's
+	// KeyVault for clusters using customer-managed etcd encryption.
+	EtcdEncryption *ServiceProviderClusterEtcdEncryptionSpec `json:"etcd_encryption,omitempty"`
+}
+
+// ServiceProviderClusterEtcdEncryptionSpec tracks the KeyVault key version
+// state for customer-managed etcd encryption.
+type ServiceProviderClusterEtcdEncryptionSpec struct {
+	// CurrentKeyVersion is the latest enabled, non-expired key version
+	// detected in the customer's KeyVault via ARM management plane.
+	CurrentKeyVersion string `json:"current_key_version,omitempty"`
+	// PreviousKeyVersion is the key version that was active before the
+	// most recent rotation. Stored for audit and potential rollback.
+	PreviousKeyVersion string `json:"previous_key_version,omitempty"`
 }
 
 // ServiceProviderClusterSpecVersion contains the desired version information.
